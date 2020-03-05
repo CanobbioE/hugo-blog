@@ -1,9 +1,9 @@
 #Uncomment as needed
-#baseurl = ""
+baseurl = "canobbioe.com"
 languageCode = "en-us"
 Title = "The art of BEEP-BOOP"
 # Copyright notice. This is displayer in the footer.
-copyright = "&copy; Copyright notice"
+#copyright = "&copy; Copyright notice"
 theme = "potato-dark"
 
 [params]
