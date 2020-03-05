@@ -1,74 +1,32 @@
-#Uncomment as needed
-baseurl = "canobbioe.com"
-languageCode = "en-us"
-Title = "The art of BEEP-BOOP"
-# Copyright notice. This is displayer in the footer.
-#copyright = "&copy; Copyright notice"
-theme = "potato-dark"
+baseurl                  = "https://www.canobbioe.com/"           # Your domain name. Must end with "/"
+languageCode             = "en-us"
+defaultContentLanguage   = "en"
+isMultilingual           = false
+title                    = "The art of BEEP-BOOPing"
+theme                    = "sam"
+pygmentsStyle            = "monokai"                        # https://help.farbox.com/pygments.html
+pygmentsCodefences       = true
+# googleAnalytics        = ""                               # Tracking code, eg. "UA-111111111-1"
 
 [params]
-  paginate = 10
-  # Social accounts. Link to these accounts are displayed in the header and
-  # footer
-  twitter = "_CanobbioE"
-  #facebook = "Your Facebook username"
-  instagram = "canobbioe"
-  github = "canobbioe"
-  #gitlab = "Your GitLab username"
-  #npm = "Your npm username"
-  #codepen = "Your CodePen username"
-  #dribbble = "Your Dribbble username"
-  #fivehundredpx = "Your 500px username" # 500px
-  #flickr = "Your Flickr username"
-  #pinterest = "Your Pinterest username"
-  #tumblr = "Your Tumblr username"
-  #vimeo = "Your Vimeo username"
-  #youtube = "Your YouTube username"
-  linkedin = "canobbioe"
-  # Disqus shortname
-  disqus = ""
-  # Google Analytics API key.
-  ga_api_key = "Your Google Analytics tracking id"
-  # Logo image. This is displayed ogp image.
-  logo = ""
-  favicon = ""
+    dateform             = "Mon Jan 02, 2006"
+    dateformfull         = "Mon Jan 2 2006 15:04:05 EST"
+    favicon              = ""
+    homepage             = "home"
+    footerText           = "=)"
 
-[[menu.main]]
-    name = "Blog"
-    url = "/"
-    weight = 1
+# Metadata for Open Graph and Twitter
+    description          = "A programming (not only) blog, with cookies." 
+    images               = ["tn.png"] 
+    title                = "The art of BEEP-BOOPing"
 
-[[menu.main]]
-    name = "About"
-    url = "/about"
-    weight = 2
+[[params.mainMenu]]
+    link = "/posts"
+    text = "articles"
 
-#[[menu.main]]
-#    identifier = "theme"
-#    name = "Theme"
-#    weight = 3
+[[params.mainMenu]]
+    link = "/about"
+    text = "about"
 
-[related]
-  # Only include matches with rank >= threshold. This is a normalized rank between 0 and 100.
-  threshold = 80
-
-  # To get stable "See also" sections we, by default, exclude newer related pages.
-  includeNewer = false
-
-  # Will lower case keywords in both queries and in the indexes.
-  toLower = true
-
-  [[related.indices]]
-  name = "keywords"
-  weight = 150
-  [[related.indices]]
-  name  = "author"
-  toLower = true
-  weight = 30
-  [[related.indices]]
-  name  = "tags"
-  weight = 100
-  [[related.indices]]
-  name  = "date"
-  weight = 10
-  pattern = "2017"
+[imaging]
+    quality = 75
