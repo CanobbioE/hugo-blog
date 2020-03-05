@@ -1,9 +1,7 @@
 ---
 title: "About"
 date: 2020-03-05T14:18:23+01:00
-draft: true
-images:
-    - /github-icon.png
+draft: false
 ---
 # The author
 Hi, I'm Edoardo! I [BEEP-BOOP](https://twitter.com/mmmverygood/status/1177245793285107712) buttons on the keyboard and code comes out of it.
