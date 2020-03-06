@@ -22,11 +22,11 @@ pygmentsCodefences       = true
 
 [[params.mainMenu]]
     link = "/posts"
-    text = "articles"
+    text = "Articles"
 
 [[params.mainMenu]]
     link = "/about"
-    text = "about"
+    text = "About"
 
 [imaging]
     quality = 75
