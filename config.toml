@@ -28,5 +28,9 @@ pygmentsCodefences       = true
     link = "/about"
     text = "About"
 
+[[params.mainMenu]]
+    link = "https://github.com/CanobbioE"
+    text = "Projects"
+
 [imaging]
     quality = 75
