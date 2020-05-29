@@ -1,6 +1,6 @@
 ---
 title: "From 1k to 100"
-date: 2020-05-29T11:40:39+01:00
+date: 2020-05-29T00:52:56+02:00
 showDate: true
 draft: false
 tags: ["blog","front end","machine learning", "angular"]
