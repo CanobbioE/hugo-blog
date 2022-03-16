@@ -1,7 +1,6 @@
 ---
 title: "Opening a blog on a budget"
 date: 2020-03-05T15:53:28+01:00
-showDate: true
 draft: false
 tags: ["blog","story","programming"]
 images:
