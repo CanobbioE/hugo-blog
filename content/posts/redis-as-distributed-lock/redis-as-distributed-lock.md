@@ -83,6 +83,7 @@ Like any race condition, we solve this by putting a lock on the shared resource.
 Since we are dealing with micro-services running on two separate instances, we need to use a distributed lock!
 
 Let's start by defining what a lock should look like:
+
 ```golang
 // UnlockFunc should be used to release a lock,
 // its behavior must be kept internal to the implementation
@@ -110,9 +111,10 @@ If it looks scary, here's a break-down of the script:
 - `PX` sets a lifespan on the mapping. Takes one parameter: the lock duration
 - `ARGV[2]` takes the second argument and uses it as the parameter for `PX`
   
-In short: we are telling redis to set a key-value pair with an expiration date, if it doesn't already exists (and it's atomic)
+**In short**: we are telling redis to set a key-value pair with an expiration date, if it doesn't already exists (and it's atomic)
 
-We'll use a similar approach for the unlock script:
+We can use a similar approach for the unlock script:
+
 ```golang
 // if the key is present, delete it
 const redisUnlockScript = `
@@ -123,7 +125,8 @@ const redisUnlockScript = `
 		end`
 ```
 
-Before we can use these scripts, we first need to do some interface magic around the package `"github.com/go-redis/redis"`:
+Before using these scripts, we need to do some interface magic around the `"github.com/go-redis/redis"` package:
+
 ```golang
 package infrastructure 
 
@@ -161,7 +164,6 @@ We are now able to run our scripts in a nice and clean way:
 
 ```golang
 package lock
-
 
 // RedisLock implements the Locker interface using Redis
 type RedisLock struct {
@@ -226,7 +228,8 @@ func initService() (Service, error) {
 That's it: we now have a distributed lock, there's nothing that can stop us! Unless...
 
 # Namespaces
-We might want to go the extra mile and use namespaces to further prevent collisions, this change is pretty straight forward, we just need to wrap our `RedisLock` and prefix each key with the namespace:
+We might want to go the extra mile and use namespaces to further prevent collisions.
+This change is pretty straight forward, we just need to wrap our `RedisLock` and prefix each key with the namespace:
 ```golang
 package lock
 
@@ -240,7 +243,7 @@ func (n *NamespacedRedisLock) prefix(key string) string {
 }
 
 func (n *NamespacedRedisLock) Lock(key string, timeout time.Duration) (UnlockFunc, error) {
-	return n.client.Lock(n.prefix(key), timeout)
+	return n.rl.Lock(n.prefix(key), timeout)
 }
 ```
 

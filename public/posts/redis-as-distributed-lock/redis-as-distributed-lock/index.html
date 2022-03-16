@@ -81,7 +81,7 @@ Redis Let&rsquo;s start by looking at Redis. If you google it, the first result 
         
 <div class="flex-container">
     <aside role="complementary">
-        Aug 09, 2021 &#183; 1126 words
+        Aug 09, 2021 &#183; 1124 words
         <div class="tag-container">
             
             
@@ -217,8 +217,8 @@ Since we are dealing with micro-services running on two separate instances, we n
 <li><code>PX</code> sets a lifespan on the mapping. Takes one parameter: the lock duration</li>
 <li><code>ARGV[2]</code> takes the second argument and uses it as the parameter for <code>PX</code></li>
 </ul>
-<p>In short: we are telling redis to set a key-value pair with an expiration date, if it doesn&rsquo;t already exists (and it&rsquo;s atomic)</p>
-<p>We&rsquo;ll use a similar approach for the unlock script:</p>
+<p><strong>In short</strong>: we are telling redis to set a key-value pair with an expiration date, if it doesn&rsquo;t already exists (and it&rsquo;s atomic)</p>
+<p>We can use a similar approach for the unlock script:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// if the key is present, delete it
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">redisUnlockScript</span> = <span style="color:#e6db74">`
 </span><span style="color:#e6db74">		if redis.call(&#34;get&#34;,KEYS[1]) == ARGV[1] then
@@ -226,7 +226,7 @@ Since we are dealing with micro-services running on two separate instances, we n
 </span><span style="color:#e6db74">		else
 </span><span style="color:#e6db74">		    return 0
 </span><span style="color:#e6db74">		end`</span>
-</code></pre></div><p>Before we can use these scripts, we first need to do some interface magic around the package <code>&quot;github.com/go-redis/redis&quot;</code>:</p>
+</code></pre></div><p>Before using these scripts, we need to do some interface magic around the <code>&quot;github.com/go-redis/redis&quot;</code> package:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">infrastructure</span> 
 
 <span style="color:#75715e">// clientWrapper wraps the methods shared between redis.ClusterClient and redis.Client
@@ -259,7 +259,6 @@ Since we are dealing with micro-services running on two separate instances, we n
 }
 </code></pre></div><p>We are now able to run our scripts in a nice and clean way:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">lock</span>
-
 
 <span style="color:#75715e">// RedisLock implements the Locker interface using Redis
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisLock</span> <span style="color:#66d9ef">struct</span> {
@@ -317,7 +316,8 @@ Since we are dealing with micro-services running on two separate instances, we n
 }
 </code></pre></div><p>That&rsquo;s it: we now have a distributed lock, there&rsquo;s nothing that can stop us! Unless&hellip;</p>
 <h1 id="namespaces">Namespaces</h1>
-<p>We might want to go the extra mile and use namespaces to further prevent collisions, this change is pretty straight forward, we just need to wrap our <code>RedisLock</code> and prefix each key with the namespace:</p>
+<p>We might want to go the extra mile and use namespaces to further prevent collisions.
+This change is pretty straight forward, we just need to wrap our <code>RedisLock</code> and prefix each key with the namespace:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">lock</span>
 
 <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">NamespacedRedisLock</span> <span style="color:#66d9ef">struct</span> {
@@ -330,7 +330,7 @@ Since we are dealing with micro-services running on two separate instances, we n
 }
 
 <span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">NamespacedRedisLock</span>) <span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">UnlockFunc</span>, <span style="color:#66d9ef">error</span>) {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">key</span>), <span style="color:#a6e22e">timeout</span>)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">rl</span>.<span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">key</span>), <span style="color:#a6e22e">timeout</span>)
 }
 </code></pre></div><h1 id="conclusion">Conclusion</h1>
 <p>Today we learned about distributed locks, a very powerful and helpful tool for any developer. 
