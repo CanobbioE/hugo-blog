@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on The art of BEEP-BOOPing</title>
+    <link>https://www.canobbioe.com/tags/</link>
+    <description>Recent content in Tags on The art of BEEP-BOOPing</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 09 Aug 2021 21:08:21 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.canobbioe.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>aws</title>
+      <link>https://www.canobbioe.com/tags/aws/</link>
+      <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/aws/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>back end</title>
+      <link>https://www.canobbioe.com/tags/back-end/</link>
+      <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/back-end/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>blog</title>
+      <link>https://www.canobbioe.com/tags/blog/</link>
+      <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://www.canobbioe.com/tags/golang/</link>
+      <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>redis</title>
+      <link>https://www.canobbioe.com/tags/redis/</link>
+      <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/redis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>angular</title>
+      <link>https://www.canobbioe.com/tags/angular/</link>
+      <pubDate>Fri, 29 May 2020 00:52:56 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/angular/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>front end</title>
+      <link>https://www.canobbioe.com/tags/front-end/</link>
+      <pubDate>Fri, 29 May 2020 00:52:56 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/front-end/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>machine learning</title>
+      <link>https://www.canobbioe.com/tags/machine-learning/</link>
+      <pubDate>Fri, 29 May 2020 00:52:56 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>programming</title>
+      <link>https://www.canobbioe.com/tags/programming/</link>
+      <pubDate>Thu, 05 Mar 2020 15:53:28 +0100</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>story</title>
+      <link>https://www.canobbioe.com/tags/story/</link>
+      <pubDate>Thu, 05 Mar 2020 15:53:28 +0100</pubDate>
+      
+      <guid>https://www.canobbioe.com/tags/story/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

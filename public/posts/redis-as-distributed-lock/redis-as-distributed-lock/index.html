@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+
+<meta name="description" content="A programming (not only) blog, with cookies.">
+<title>
+    Distributed Locking with AWS Redis - The art of BEEP-BOOPing
+</title>
+
+
+<link rel="shortcut icon" href="/favicon.png">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/style.sass" integrity="" crossorigin="anonymous" media="screen">
+
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://www.canobbioe.com/favicon.png"/>
+
+<meta name="twitter:title" content="Distributed Locking with AWS Redis"/>
+<meta name="twitter:description" content="Intro In this post we&rsquo;re going to explore one of the many ways we can use Redis and Go to build something cool. Specifically, we&rsquo;ll be building a distributed lock to prevent race condition between micro-services.
+Redis Let&rsquo;s start by looking at Redis. If you google it, the first result states that:
+ Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache, and message broker."/>
+
+<meta property="og:title" content="Distributed Locking with AWS Redis" />
+<meta property="og:description" content="Intro In this post we&rsquo;re going to explore one of the many ways we can use Redis and Go to build something cool. Specifically, we&rsquo;ll be building a distributed lock to prevent race condition between micro-services.
+Redis Let&rsquo;s start by looking at Redis. If you google it, the first result states that:
+ Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache, and message broker." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.canobbioe.com/posts/redis-as-distributed-lock/redis-as-distributed-lock/" />
+<meta property="og:image" content="https://www.canobbioe.com/favicon.png"/>
+<meta property="article:published_time" content="2021-08-09T21:08:21+02:00" />
+<meta property="article:modified_time" content="2021-08-09T21:08:21+02:00" /><meta property="og:site_name" content="The art of BEEP-BOOPing" />
+
+
+    
+
+    
+    
+    
+    <title>
+        
+        Distributed Locking with AWS Redis
+        
+    </title>
+</head>
+
+<body>
+    
+    
+    <header class="wrap flex-container">
+        <h1>Distributed Locking with AWS Redis</h1>
+    </header>
+    
+    <main class="wrap">
+        
+<div class="flex-container">
+    <aside role="complementary">
+        Aug 09, 2021 &#183; 1126 words
+        <div class="tag-container">
+            
+            
+            <span class="tag">
+                <a href="/tags/blog/">
+                    blog
+                </a>
+            </span>
+            
+            
+            
+            <span class="tag">
+                <a href="/tags/golang/">
+                    golang
+                </a>
+            </span>
+            
+            
+            
+            <span class="tag">
+                <a href="/tags/aws/">
+                    aws
+                </a>
+            </span>
+            
+            
+            
+            <span class="tag">
+                <a href="/tags/redis/">
+                    redis
+                </a>
+            </span>
+            
+            
+            
+            <span class="tag">
+                <a href="/tags/back-end/">
+                    back end
+                </a>
+            </span>
+            
+            
+        </div>
+    </aside>
+    <hr />
+    <article role="article">
+        <h1 id="intro">Intro</h1>
+<p>In this post we&rsquo;re going to explore one of the many ways we can use Redis and Go to build something cool.
+Specifically, we&rsquo;ll be building a distributed lock to prevent race condition between micro-services.</p>
+<h1 id="redis">Redis</h1>
+<p>Let&rsquo;s start by looking at Redis. If you google it, the first result states that:</p>
+<blockquote>
+<p>Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache, and message broker. Redis provides data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes, and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions, and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster</p>
+</blockquote>
+<p>Cool stuff right? What interests us are these two things:</p>
+<ul>
+<li><em>&ldquo;in-memory data structure store&rdquo;</em>: meaning it&rsquo;s extremely fast to retrieve and store values</li>
+<li>_&ldquo;Redis has built-in [&hellip;] Lua scripting&rdquo;: it will come into play later on. For now, let&rsquo;s just say it gives great flexibility</li>
+</ul>
+<h1 id="the-need-for-a-distributed-lock">The need for a distributed lock</h1>
+<p>In the era of micro-services, where everything is cloud based, the need for a distributed lock is more common than you might think.</p>
+<p>For the sake of this example, we&rsquo;re going to use two micro-services.
+For simplicity they both share the same codebase, but an environment variable determines which service is started:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Service</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) <span style="color:#66d9ef">error</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ServiceName</span> <span style="color:#66d9ef">string</span>
+
+<span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">FirstServiceName</span>  <span style="color:#a6e22e">ServiceName</span> = <span style="color:#e6db74">&#34;service.first&#34;</span>
+	<span style="color:#a6e22e">SecondServiceName</span> <span style="color:#a6e22e">ServiceName</span> = <span style="color:#e6db74">&#34;service.second&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">initService</span>() (<span style="color:#a6e22e">Service</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">cfg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">configFromFile</span>(<span style="color:#e6db74">&#34;./.env&#34;</span>)
+
+	<span style="color:#a6e22e">services</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">map</span>[<span style="color:#a6e22e">ServiceName</span>]<span style="color:#a6e22e">Service</span>{
+		<span style="color:#a6e22e">FirstServiceName</span>:  <span style="color:#a6e22e">NewFirstService</span>(<span style="color:#a6e22e">cfg</span>),
+		<span style="color:#a6e22e">SecondServiceName</span>: <span style="color:#a6e22e">NewSecondService</span>(<span style="color:#a6e22e">cfg</span>),
+	}
+
+	<span style="color:#a6e22e">service</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">services</span>[<span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">Runtime</span>]
+	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Errorf</span>(<span style="color:#e6db74">&#34;unknown runtime: [%s]&#34;</span>, <span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">Runtime</span>)
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">service</span>, <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">service</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">initServices</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()))
+}
+</code></pre></div><h1 id="lets-code">Let&rsquo;s code!</h1>
+<p>Now, pretend both micro-services, for some reasons, needs to access the same database.
+Additionally, let&rsquo;s pretend we want to run the database&rsquo;s migrations inside our <code>initService()</code> function:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">initService</span>() (<span style="color:#a6e22e">Service</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">cfg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">configFromFile</span>(<span style="color:#e6db74">&#34;./.env&#34;</span>)
+
+	<span style="color:#a6e22e">db</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewDbConnection</span>(<span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">DbSettings</span>)
+	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">RunMigrations</span>(<span style="color:#e6db74">&#34;./migrations/&#34;</span>)
+
+	<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">service</span>, <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>Easy right? But wait! Both services are going to run <code>db.RunMigrations</code> and we have no way to know which service is going to reach this line first</p>
+<p>Like any race condition, we solve this by putting a lock on the shared resource.
+Since we are dealing with micro-services running on two separate instances, we need to use a distributed lock!</p>
+<p>Let&rsquo;s start by defining what a lock should look like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// UnlockFunc should be used to release a lock,
+</span><span style="color:#75715e">// its behavior must be kept internal to the implementation
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">UnlockFunc</span> <span style="color:#66d9ef">func</span>() <span style="color:#66d9ef">error</span>
+
+<span style="color:#75715e">// Locker offers the option to lock a key for a given amount of time
+</span><span style="color:#75715e">// after that time has passed, the lock should be released (to prevent deadlocks)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Locker</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">UnlockFunc</span>, <span style="color:#66d9ef">error</span>)
+}
+</code></pre></div><p>Nice! Now, for the actual implementation&hellip; A lock should perform an atomic operation, and here&rsquo;s where Lua scripting comes into play!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">redisLockScript</span> = <span style="color:#e6db74">`return redis.call(&#39;SET&#39;, KEYS[1], ARGV[1], &#39;NX&#39;, &#39;PX&#39;, ARGV[2])`</span>
+</code></pre></div><p>If it looks scary, here&rsquo;s a break-down of the script:</p>
+<ul>
+<li><code>redis.call</code> calls a Redis action</li>
+<li><code>SET</code> is the Redis action we want to perform</li>
+<li><code>KEYS[1]</code> takes the first (and only) key in the given list</li>
+<li><code>ARGV[1]</code> takes the first argument, and maps it to the previously passed key</li>
+<li><code>NX</code> only creates the Key-Argv mapping if it doesn&rsquo;t already exists</li>
+<li><code>PX</code> sets a lifespan on the mapping. Takes one parameter: the lock duration</li>
+<li><code>ARGV[2]</code> takes the second argument and uses it as the parameter for <code>PX</code></li>
+</ul>
+<p>In short: we are telling redis to set a key-value pair with an expiration date, if it doesn&rsquo;t already exists (and it&rsquo;s atomic)</p>
+<p>We&rsquo;ll use a similar approach for the unlock script:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// if the key is present, delete it
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">redisUnlockScript</span> = <span style="color:#e6db74">`
+</span><span style="color:#e6db74">		if redis.call(&#34;get&#34;,KEYS[1]) == ARGV[1] then
+</span><span style="color:#e6db74">		    return redis.call(&#34;del&#34;, KEYS[1])
+</span><span style="color:#e6db74">		else
+</span><span style="color:#e6db74">		    return 0
+</span><span style="color:#e6db74">		end`</span>
+</code></pre></div><p>Before we can use these scripts, we first need to do some interface magic around the package <code>&quot;github.com/go-redis/redis&quot;</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">infrastructure</span> 
+
+<span style="color:#75715e">// clientWrapper wraps the methods shared between redis.ClusterClient and redis.Client
+</span><span style="color:#75715e">// implements redis.scripter and is implemented by redis.Cmdble
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">clientWrapper</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Ping</span>() <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">StatusCmd</span>
+	<span style="color:#a6e22e">Get</span>(<span style="color:#66d9ef">string</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">StringCmd</span>
+	<span style="color:#a6e22e">Set</span>(<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">interface</span>{}, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">StatusCmd</span>
+	<span style="color:#a6e22e">Del</span>(<span style="color:#f92672">...</span><span style="color:#66d9ef">string</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">IntCmd</span>
+
+	<span style="color:#a6e22e">Eval</span>(<span style="color:#a6e22e">script</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keys</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">args</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Cmd</span>
+	<span style="color:#a6e22e">EvalSha</span>(<span style="color:#a6e22e">sha1</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keys</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">args</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">Cmd</span>
+	<span style="color:#a6e22e">ScriptExists</span>(<span style="color:#a6e22e">hashes</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">string</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">BoolSliceCmd</span>
+	<span style="color:#a6e22e">ScriptLoad</span>(<span style="color:#a6e22e">script</span> <span style="color:#66d9ef">string</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">StringCmd</span>
+}
+
+<span style="color:#75715e">// RedisRunner describes the method we want to expose from the &#34;go-redis/redis&#34; client
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisRunner</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">script</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keys</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">args</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>)
+}
+
+<span style="color:#75715e">// RedisClient is the public implementation of RedisRunner using the underlying clientWrapper
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisClient</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">client</span> <span style="color:#a6e22e">clientWrapper</span>
+}
+
+<span style="color:#75715e">// Run a given script
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">rc</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisClient</span>) <span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">script</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">keys</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">args</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) (<span style="color:#66d9ef">interface</span>{}, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">NewScript</span>(<span style="color:#a6e22e">script</span>).<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">rc</span>.<span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">keys</span>, <span style="color:#a6e22e">args</span><span style="color:#f92672">...</span>).<span style="color:#a6e22e">Result</span>()
+}
+</code></pre></div><p>We are now able to run our scripts in a nice and clean way:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">lock</span>
+
+
+<span style="color:#75715e">// RedisLock implements the Locker interface using Redis
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RedisLock</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">client</span> <span style="color:#a6e22e">infrastructure</span>.<span style="color:#a6e22e">RedisRunner</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">UnlockFunc</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">val</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">NewV4</span>().<span style="color:#a6e22e">String</span>()
+
+	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rc</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">redisLockScript</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">key</span>}, <span style="color:#a6e22e">val</span>, int(<span style="color:#a6e22e">timeout</span><span style="color:#f92672">/</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>))
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+	}
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">res</span> <span style="color:#f92672">!=</span> <span style="color:#a6e22e">infrastructure</span>.<span style="color:#a6e22e">RedisResponseOk</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrUnableToLock</span>
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">rc</span>.<span style="color:#a6e22e">unlock</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">val</span>), <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RedisLock</span>) <span style="color:#a6e22e">unlock</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span> <span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">UnlockFunc</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>() <span style="color:#66d9ef">error</span> {
+		<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rc</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Run</span>(<span style="color:#a6e22e">redisUnlockScript</span>, []<span style="color:#66d9ef">string</span>{<span style="color:#a6e22e">key</span>}, <span style="color:#a6e22e">value</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+		}
+
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">res</span>.(<span style="color:#66d9ef">int64</span>); !<span style="color:#a6e22e">ok</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ErrUnableToUnlock</span>
+		}
+
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+	}
+}
+</code></pre></div><h1 id="using-the-lock">Using the lock</h1>
+<p>Amazing! Finally, we can see the lock at work:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">initService</span>() (<span style="color:#a6e22e">Service</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">cfg</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">configFromFile</span>(<span style="color:#e6db74">&#34;./.env&#34;</span>)
+
+	<span style="color:#a6e22e">redisLock</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">lock</span>.<span style="color:#a6e22e">NewRedisLock</span>(<span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">RedisSettings</span>)
+
+	<span style="color:#a6e22e">unlock</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">redisLock</span>.<span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">MigrationLockKey</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Minute</span><span style="color:#f92672">*</span><span style="color:#ae81ff">5</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">err</span>
+	}
+
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">unlock</span>() <span style="color:#75715e">// not checking the error for brevity&#39;s sake
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">db</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">NewDbConnection</span>(<span style="color:#a6e22e">cfg</span>.<span style="color:#a6e22e">DbSettings</span>)
+	<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">RunMigrations</span>(<span style="color:#e6db74">&#34;./migrations/&#34;</span>)
+
+	<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">service</span>, <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>That&rsquo;s it: we now have a distributed lock, there&rsquo;s nothing that can stop us! Unless&hellip;</p>
+<h1 id="namespaces">Namespaces</h1>
+<p>We might want to go the extra mile and use namespaces to further prevent collisions, this change is pretty straight forward, we just need to wrap our <code>RedisLock</code> and prefix each key with the namespace:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#f92672">package</span> <span style="color:#a6e22e">lock</span>
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">NamespacedRedisLock</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">namespace</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">rl</span>        <span style="color:#a6e22e">RedisLock</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">NamespacedRedisLock</span>) <span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%s:%s&#34;</span>, <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">namespace</span>, <span style="color:#a6e22e">key</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">n</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">NamespacedRedisLock</span>) <span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">UnlockFunc</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Lock</span>(<span style="color:#a6e22e">n</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">key</span>), <span style="color:#a6e22e">timeout</span>)
+}
+</code></pre></div><h1 id="conclusion">Conclusion</h1>
+<p>Today we learned about distributed locks, a very powerful and helpful tool for any developer. 
+It might look like this is a bit of an overkill, but the distributed locks&rsquo; use-cases don&rsquo;t just stop at synchronizing database&rsquo;s accesses.
+Whether you&rsquo;re working with an asynchronous architecture like an event-based system, or you need to coordinate a set of operations on the same resource, distributed locks offers lots of possibilities and are extremely relevant in the current world of micro-services.</p>
+
+    </article>
+</div>
+
+
+        
+<nav role="navigation" class="flex-container bottom-menu">
+    
+<hr />
+<p>
+
+
+    
+        <a href="/posts">back</a>
+        
+            &#183;
+        
+    
+
+    
+        
+            <a href="/posts">Articles</a>
+        
+    
+    
+        
+            &#183; 
+            <a href="/about">About</a>
+        
+            &#183; 
+            <a href="https://github.com/CanobbioE">Projects</a>
+        
+    
+    
+    
+        &#183; 
+        <a href="/">
+            Home
+        </a>
+    
+
+</p>
+</nav>
+
+    </main>
+    
+    <footer class="flex-container footer">Ciao! =)
+</footer>
+    
+    
+</body>
+
+</html>

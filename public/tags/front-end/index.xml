@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>front end on The art of BEEP-BOOPing</title>
+    <link>https://www.canobbioe.com/tags/front-end/</link>
+    <description>Recent content in front end on The art of BEEP-BOOPing</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 29 May 2020 00:52:56 +0200</lastBuildDate>
+    
+	<atom:link href="https://www.canobbioe.com/tags/front-end/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>From 1k to 100</title>
+      <link>https://www.canobbioe.com/posts/front-end-only-ml/front-end-only-ml/</link>
+      <pubDate>Fri, 29 May 2020 00:52:56 +0200</pubDate>
+      
+      <guid>https://www.canobbioe.com/posts/front-end-only-ml/front-end-only-ml/</guid>
+      <description>What is this? This is the story of how an ugly little duckling slow machine learning web-app grew up to be a beautiful swan fast front-end-only application.
+The setting Once upon a time, in a country far far away, two software developers were instructed to improve a front end only web application capable to perform numbers recognition on photos.
+I happen to be one of those two developers &amp;lsquo;o&amp;rsquo;.
+The initial requirements for the application were simple:</description>
+    </item>
+    
+  </channel>
+</rss>
