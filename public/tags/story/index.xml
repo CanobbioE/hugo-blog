@@ -6,11 +6,7 @@
     <description>Recent content in story on The art of BEEP-BOOPing</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2020 15:53:28 +0100</lastBuildDate>
-    
-	<atom:link href="https://www.canobbioe.com/tags/story/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 05 Mar 2020 15:53:28 +0100</lastBuildDate><atom:link href="https://www.canobbioe.com/tags/story/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Opening a blog on a budget</title>
       <link>https://www.canobbioe.com/posts/open-a-blog-on-a-budget/open-a-blog-on-a-budget/</link>
@@ -19,7 +15,7 @@
       <guid>https://www.canobbioe.com/posts/open-a-blog-on-a-budget/open-a-blog-on-a-budget/</guid>
       <description>What better way to start a programming/technical/anything else blog than describing the journey to set it up?
 TL;DR: I used Hugo and Netlify to create and deploy the blog and Namecheap.com to buy a cheap domain name.
-A bit of history Since I started programming I thought about opening my personal blog. I kept procrastinating due to a lack of time, money, tools and knowledge. The rare occasions I looked for a solution I always ended up with half solutions or expensive options.</description>
+A bit of history&amp;nbsp;¶ Since I started programming I thought about opening my personal blog. I kept procrastinating due to a lack of time, money, tools and knowledge. The rare occasions I looked for a solution I always ended up with half solutions or expensive options.</description>
     </item>
     
   </channel>

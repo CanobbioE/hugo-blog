@@ -6,20 +6,16 @@
     <description>Recent content on The art of BEEP-BOOPing</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Mar 2020 14:18:23 +0100</lastBuildDate>
-    
-	<atom:link href="https://www.canobbioe.com/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 09 Aug 2021 21:08:21 +0200</lastBuildDate><atom:link href="https://www.canobbioe.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Distributed Locking with AWS Redis</title>
       <link>https://www.canobbioe.com/posts/redis-as-distributed-lock/redis-as-distributed-lock/</link>
       <pubDate>Mon, 09 Aug 2021 21:08:21 +0200</pubDate>
       
       <guid>https://www.canobbioe.com/posts/redis-as-distributed-lock/redis-as-distributed-lock/</guid>
-      <description>Intro In this post we&amp;rsquo;re going to explore one of the many ways we can use Redis and Go to build something cool. Specifically, we&amp;rsquo;ll be building a distributed lock to prevent race condition between micro-services.
-Redis Let&amp;rsquo;s start by looking at Redis. If you google it, the first result states that:
- Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache, and message broker.</description>
+      <description>Intro&amp;nbsp;¶ In this post we&amp;rsquo;re going to explore one of the many ways we can use Redis and Go to build something cool. Specifically, we&amp;rsquo;ll be building a distributed lock to prevent race condition between micro-services.
+Redis&amp;nbsp;¶ Let&amp;rsquo;s start by looking at Redis. If you google it, the first result states that:
+Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache, and message broker.</description>
     </item>
     
     <item>
@@ -28,10 +24,9 @@ Redis Let&amp;rsquo;s start by looking at Redis. If you google it, the first res
       <pubDate>Fri, 29 May 2020 00:52:56 +0200</pubDate>
       
       <guid>https://www.canobbioe.com/posts/front-end-only-ml/front-end-only-ml/</guid>
-      <description>What is this? This is the story of how an ugly little duckling slow machine learning web-app grew up to be a beautiful swan fast front-end-only application.
-The setting Once upon a time, in a country far far away, two software developers were instructed to improve a front end only web application capable to perform numbers recognition on photos.
-I happen to be one of those two developers &amp;lsquo;o&amp;rsquo;.
-The initial requirements for the application were simple:</description>
+      <description>What is this?&amp;nbsp;¶ This is the story of how an ugly little duckling slow machine learning web-app grew up to be a beautiful swan fast front-end-only application.
+The setting&amp;nbsp;¶ Once upon a time, in a country far far away, two software developers were instructed to improve a front end only web application capable to perform numbers recognition on photos.
+I happen to be one of those two developers &amp;lsquo;o&amp;rsquo;.</description>
     </item>
     
     <item>
@@ -42,7 +37,7 @@ The initial requirements for the application were simple:</description>
       <guid>https://www.canobbioe.com/posts/open-a-blog-on-a-budget/open-a-blog-on-a-budget/</guid>
       <description>What better way to start a programming/technical/anything else blog than describing the journey to set it up?
 TL;DR: I used Hugo and Netlify to create and deploy the blog and Namecheap.com to buy a cheap domain name.
-A bit of history Since I started programming I thought about opening my personal blog. I kept procrastinating due to a lack of time, money, tools and knowledge. The rare occasions I looked for a solution I always ended up with half solutions or expensive options.</description>
+A bit of history&amp;nbsp;¶ Since I started programming I thought about opening my personal blog. I kept procrastinating due to a lack of time, money, tools and knowledge. The rare occasions I looked for a solution I always ended up with half solutions or expensive options.</description>
     </item>
     
     <item>
@@ -51,9 +46,9 @@ A bit of history Since I started programming I thought about opening my personal
       <pubDate>Thu, 05 Mar 2020 14:18:23 +0100</pubDate>
       
       <guid>https://www.canobbioe.com/about/</guid>
-      <description>The author Hi, I&amp;rsquo;m Edoardo! I BEEP-BOOP buttons on the keyboard and code comes out of it. I am a Software Engineer that loves to be all over the stack, I even enjoy devops.
+      <description>The author&amp;nbsp;¶ Hi, I&amp;rsquo;m Edoardo! I BEEP-BOOP buttons on the keyboard and code comes out of it. I am a Software Engineer that loves to be all over the stack, I even enjoy devops.
 Things I like (the most):
- Keeping things concise Making lists and keeping related details on a single bullet point Hiking, scuba diving and weight lifting Programming in Golang Cooking, gaming and occasionally sleeping  The blog I&amp;rsquo;ve opened this blog to write primarily about my programming misadventures, but I&amp;rsquo;d also like to publish anything I might find interesting to share.</description>
+Keeping things concise Making lists and keeping related details on a single bullet point Hiking, scuba diving and weight lifting Programming in Golang Cooking, gaming and occasionally sleeping The blog&amp;nbsp;¶ I&amp;rsquo;ve opened this blog to write primarily about my programming misadventures, but I&amp;rsquo;d also like to publish anything I might find interesting to share.</description>
     </item>
     
   </channel>
