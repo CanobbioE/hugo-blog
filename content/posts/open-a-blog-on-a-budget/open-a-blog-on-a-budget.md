@@ -2,6 +2,7 @@
 title: "Opening a blog on a budget"
 date: 2020-03-05T15:53:28+01:00
 draft: false
+showDate: false
 tags: ["blog","story","programming"]
 images:
     - /posts/open-a-blog-on-a-budget/cheapname.PNG

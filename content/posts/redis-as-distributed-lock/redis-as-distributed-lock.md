@@ -1,6 +1,7 @@
 ---
 title: "Distributed Locking with AWS Redis"
 date: 2021-08-09T21:08:21+02:00
+showDate: false
 draft: false
 tags: ["blog","golang","aws","redis","back end"]
 ---
