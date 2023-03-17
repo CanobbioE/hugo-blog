@@ -29,6 +29,10 @@ pygmentsCodefences       = true
     text = "About"
 
 [[params.mainMenu]]
+    link = "/resume"
+    text = "Resume"
+
+[[params.mainMenu]]
     link = "https://github.com/CanobbioE"
     text = "Projects"
 
