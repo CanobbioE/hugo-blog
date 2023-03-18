@@ -1,0 +1,39 @@
+<style>
+
+    .static-section {
+        font-family: 'Didact Gothic','sans serif';
+        color: #cccccc;
+    }
+
+    .title {
+        font-size: medium;
+        font-weight: bolder;
+    }
+
+    .subtitle {
+        font-size: x-small;
+        margin-top: -16px;
+        text-indent: 2em;
+    }
+
+    .company {
+        font-weight: bolder;
+    }
+
+    .location {
+        font-size: small;
+        font-style: italic;
+    }
+
+</style>
+
+<div class="static-section">
+    <p class="title">
+        <span class="dot">&bull;</span>  {{ .Get "title" }} &#8212; 
+        <span class="company">{{ .Get "company" }}</span>
+        
+    </p>
+    <p class="subtitle">
+        <span class="location">{{ .Get "location" }}</span> &#8212; {{ .Get "from" }} {{ if .Get "to" }}&#8594; {{ .Get "to" }} {{ else }} {{ end }}
+    </p>
+</div>

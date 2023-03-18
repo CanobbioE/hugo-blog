@@ -1,0 +1,56 @@
+<style>
+
+    details {
+        font-family: 'Didact Gothic','sans serif';
+    }
+
+    summary:hover {
+        cursor: pointer;
+        color: #fff;
+        transition: color 0.5s linear;
+    }
+
+    summary {
+        transition: color 0.5s linear;
+        color: #cccccc;
+        font-size: medium;
+        list-style: none;
+    }
+
+    .content {
+        font-size: small;
+        color: #f5f5f5;
+        padding-left: 2em;
+    }
+
+    .title {
+        font-size: large;
+        font-weight: bolder;
+    }
+
+    .subtitle {
+        font-size: x-small;
+        margin-top: -16px;
+        text-indent: 2em;
+    }
+
+    .location {
+        font-size: small;
+        font-style: italic;
+    }
+</style>
+
+<details>
+    <summary>
+        <p class="title">
+            <span class="marker">+  </span>{{ .Get "title" }} &#8212; 
+            <span class="company">{{ .Get "company" }}</span>
+            
+        </p>
+        <p class="subtitle">
+            <span class="location">{{ .Get "location" }}</span>{{if .Get "from"}} &#8212; {{ .Get "from" }} {{ if .Get "to" }}&#8594; {{ .Get "to" }} {{ else }} {{ end }} {{ else }} {{ end }}
+        </p>
+    </summary>
+    <div class="content">{{ .Inner }}</div>
+</details>
+

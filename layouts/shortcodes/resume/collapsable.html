@@ -1,0 +1,16 @@
+<script>
+    var marks = document.getElementsByClassName("marker")
+    for (let i = 0; i < marks.length; i++) {
+        const element = marks[i];
+
+        element.parentElement.parentElement.addEventListener("click", () => {
+            if (element.textContent == "+  ") {
+                element.textContent = "-  ";
+            } else {
+                element.textContent = "+  ";
+            }
+        });
+    }
+
+
+</script>
