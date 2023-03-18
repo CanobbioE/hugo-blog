@@ -6,14 +6,14 @@ draft: false
 tags: ["blog","story", "soft-skills"]
 ---
 
-> "Sorry for the long article"
-> "Sorry for wasting your time"
-> "Sorry for this boring text"
-> "Sorry for my mistakes"
-> "Sorry for being repetitive"
-> "Sorry for everything"
-> "Sorry to bother"
-> "Sorry for saying sorry too much"
+> "Sorry for the long article"  
+> "Sorry for wasting your time"  
+> "Sorry for this boring text"  
+> "Sorry for my mistakes"  
+> "Sorry for being repetitive"  
+> "Sorry for everything"  
+> "Sorry to bother"  
+> "Sorry for saying sorry too much"  
 
 
 
@@ -23,13 +23,13 @@ That is why I started saying "Thank You".
 
 Now, this is common knowledge, I know... But bear with me for a second:
 
-> "Thank you for reading my article"
-> "Thank you for your time"
-> "Thank you for paying attention"
-> "Thank you for your patience"
-> "Thank you for listening"
-> "Thank you for bearing with it"
-> "Thank you"
+> "Thank you for reading my article"  
+> "Thank you for your time"  
+> "Thank you for paying attention"  
+> "Thank you for your patience"  
+> "Thank you for listening"  
+> "Thank you for bearing with it"  
+> "Thank you"  
 
 
 Not only it sounds better, it even puts a smile on the listener.
@@ -38,10 +38,10 @@ However, what people sometime fail to grasp, is that over-using those two magic 
 
 This means that we should use it carefully and spruce up the way we express gratitude. Either by being more verbose or by complimenting one's virtues.
 
-> "It's really nice that you read through this"
-> "I appreciate your time"
-> "That was a great display of patience"
-> ...so on and so forth.
+> "It's really nice that you read through this"  
+> "I appreciate your time"  
+> "That was a great display of patience"  
+> ...so on and so forth.  
 
 Finally, remember that, **sometimes**, "sorry" is completely fine. We have that word, and we are supposed to use it when it matters.
 
