@@ -43,11 +43,13 @@ This means that we should use it carefully and spruce up the way we express grat
 > "That was a great display of patience"  
 > ...so on and so forth.  
 
-Finally, remember that, **sometimes**, "sorry" is completely fine. We have that word, and we are supposed to use it when it matters.
+Finally, let's remember that, **sometimes**, "sorry" is completely fine. We have that word, and we are supposed to use it when it matters.
 
 There's no way to _thank-you-fy_ a "Sorry to hear that" or a "Sorry I drove my car into your swimming pool".
 Nevertheless, start thanking and complimenting people virtues.
 It will boost people's morale and make you more likeable!
+
+I wanted to share this piece of information, because it's something that really helped me grow both professionally and as a person.
 
 You reached the end of this post, thank you for your time!
 
