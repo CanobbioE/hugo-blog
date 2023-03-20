@@ -3,7 +3,7 @@ title: "The art of Thank You"
 date: 2023-03-17T11:55:38+04:00
 showDate: false
 draft: false
-tags: ["blog","story", "soft-skills"]
+tags: ["blog","story", "soft-skills", "opinions"]
 ---
 
 > "Sorry for the long article"  

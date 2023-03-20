@@ -3,7 +3,7 @@ title: "Cleaner Architecture?"
 date: 2022-05-12T13:13:26+04:00
 showDate: false
 draft: false
-tags: ["blog","story"]
+tags: ["blog","architecture","programming","opinions"]
 images:
     - /posts/cleaner-architecture/CleanArchitecture.jpeg
     - /posts/cleaner-architecture/mrincredible.png
