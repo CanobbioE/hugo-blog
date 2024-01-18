@@ -11,11 +11,24 @@ resources:
 # Work Experience
 
 {{< resume/section 
+    title=`Senior Software Engineer (Platform)`
+    company=`IndyKite`
+    location=`Remote`
+    from=`AUGUST 2023`
+    to=`PRESENT`
+>}}
+<p> Developed new gRPC endpoints and improved existing ones. </p>
+<p> Introduced the use of Google Cloud Platform's secret manager and securely migrated sensible data </p>
+<p> Improved tracing capabilities across services. </p>
+<p> Migrated core services from Neo4j to CockroachDB. Introduced parametrized integration tests to simplify the testing of the database migration.</p>
+{{< /resume/section >}}
+
+{{< resume/section 
     title=`Senior Software Engineer (Payments)`
     company=`Glofox`
     location=`Remote`
     from=`SEPTEMBER 2021`
-    to=`PRESENT`
+    to=`AUGUST 2023`
 >}}
 <p> Architected and implemented new features, following Agile’s principles: slicing
 requirements, planning “three amigos” sessions and leading user story mappings.</p>
