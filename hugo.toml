@@ -1,0 +1,40 @@
+baseurl                  = "https://www.canobbioe.com/"
+languageCode             = "en-us"
+defaultContentLanguage   = "en"
+isMultilingual           = false
+title                    = "The art of BEEP-BOOPing"
+theme                    = "sam"
+pygmentsStyle            = "monokai"                        # https://help.farbox.com/pygments.html
+pygmentsCodefences       = true
+# googleAnalytics        = ""                               # Tracking code, eg. "UA-111111111-1"
+
+[params]
+    dateform             = "Jan 02, 2006"
+    dateformfull         = "Mon Jan 2 2006 15:04:05 EST"
+    favicon              = "favicon.png"
+    homepage             = "Home"
+    footerText           = "Ciao! =)"
+
+# Metadata for Open Graph and Twitter
+    description          = "A programming (not only) blog, with cookies." 
+    images               = ["favicon.png"] 
+    title                = "The art of BEEP-BOOPing"
+
+[[params.mainMenu]]
+    link = "/posts"
+    text = "Articles"
+
+[[params.mainMenu]]
+    link = "/about"
+    text = "About"
+
+[[params.mainMenu]]
+    link = "/resume"
+    text = "Resume"
+
+[[params.mainMenu]]
+    link = "https://github.com/CanobbioE"
+    text = "Projects"
+
+[imaging]
+    quality = 75
