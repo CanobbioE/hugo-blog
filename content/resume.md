@@ -5,7 +5,7 @@ draft: false
 resources:
     - /Canobbio%20Edoardo%20-%20CV.pdf
 ---
-[Download the latest PDF version of my CV](/Canobbio%20Edoardo%20-%20CV.pdf).
+[Download the latest PDF version of my resume](/Canobbio%20Edoardo%20-%20CV.pdf).
 
 
 # Work Experience
@@ -17,10 +17,11 @@ resources:
     from=`AUGUST 2023`
     to=`PRESENT`
 >}}
-<p> Developed new gRPC endpoints and improved existing ones. </p>
-<p> Introduced the use of Google Cloud Platform's secret manager and securely migrated sensible data </p>
-<p> Improved tracing capabilities across services. </p>
-<p> Migrated core services from Neo4j to CockroachDB. Introduced parametrized integration tests to simplify the testing of the database migration.</p>
+<p>Single-handedly migrated the company Go codebase to FIPS 140-3 compliance, ensuring cryptographic standards and boosting customer confidence.</p>
+<p>Led the adoption of Google Cloud Secret Manager, securely migrating sensitive data and significantly enhancing the company's security posture, contributing to successful SOC 2 compliance.</p>
+<p>Enhanced service observability by improving distributed tracing, resulting in an 80% reduction in mean time to recovery.</p>
+<p>Executed a seamless migration from Neo4j to CockroachDB, using feature flags and parameterized tests to maintain uptime. This enabled multi-region availability and improved platform resilience.</p>
+<p>Refactored high-volume Temporal workflows, replacing 200+ GB JSON-based batch operations with concurrent data streaming, achieving a 10x reduction in memory usage and processing time.</p>
 {{< /resume/section >}}
 
 {{< resume/section 
@@ -30,14 +31,11 @@ resources:
     from=`SEPTEMBER 2021`
     to=`AUGUST 2023`
 >}}
-<p> Architected and implemented new features, following Agile’s principles: slicing
-requirements, planning “three amigos” sessions and leading user story mappings.</p>
-<p>Onboarded and mentored junior, mid and senior level teammates.</p>
-<p> Led the refactoring of multiple Serverless microservices, resolving over 150 high
-priority customer impacting issues, in less than six months. </p>
-<p>Established good testing practices by influencing others through code reviews and
-leading by example.</p>
-<p>Documented the API of a gRPC service, linking SwaggerUI to a REST reverse proxy.</p>
+<p>Designed and delivered new features within a serverless architecture, applying Agile practices such as user story mapping, requirement slicing, and “three amigos” planning, accelerating delivery and improving cross-functional alignment among developers, designers, and QA.</p>
+<p>Mentored teammates across experience levels, supporting onboarding and technical growth, which contributed to team expansion and improved developer retention.</p>
+<p>Led the refactoring of critical microservices to enhance reliability and maintainability, resolving 150+ high-priority, customer-facing issues in six months and significantly improving system stability and customer satisfaction.</p>
+<p>Promoted testing excellence through rigorous code reviews and test-driven development, leading to a 20% increase in test coverage and overall improved code quality.</p>
+<p>Documented gRPC APIs and integrated SwaggerUI via a REST reverse proxy, improving developer experience and boosting internal tooling efficiency through easier API discovery and usage.</p>
 {{< /resume/section >}}
 
 
@@ -48,14 +46,9 @@ leading by example.</p>
     from=`SEPTEMBER 2020`
     to=`SEPTEMBER 2021`
 >}}
-<p> Re-architected and implemented a messaging service, separating it into multiple,
-easily scalable, runtimes, using SNS and SQS. </p>
-<p> As a result, the queue waiting times dropped: from over 90 minutes to around twelve,
-under heavy traffic. </p>
-<p> Introduced E2E tests as a CircleCI pipeline step for concurrent Golang microservices,
-increasing confidence and velocity of future releases. </p>
-<p> Implemented an auto-scaling mechanism for concurrent Go SQS workers, reducing the
-company’s AWS monthly costs by $272. </p>
+<p>Re-architected an underperforming messaging service by splitting it into multiple scalable runtimes and leveraging AWS SNS and SQS, reducing queue wait times from over 90 minutes to ~12 minutes during peak traffic, and significantly improving throughput and responsiveness.</p>
+<p>Integrated end-to-end tests into the release pipeline via CircleCI for concurrent Golang microservices, increasing release confidence and accelerating delivery velocity across the team.</p>
+<p>Implemented an auto-scaling mechanism for concurrent Go SQS workers, reducing the company’s AWS monthly costs by $272. </p>
 {{< /resume/section >}}
 
 
@@ -66,15 +59,10 @@ company’s AWS monthly costs by $272. </p>
     from=`OCTOBER 2019`
     to=`AUGUST 2020`
 >}}
-<p>Re-designed a machine learning service into a front-end-only application, using
-TensorFlowJs and Angular 2+.
-Consequently, reducing the average image recognition time from over 1000 ms to
-about 150 ms.</p>
-<p>Hastened the Firebase deployment of multiple projects leveraging GitLab’s CI/CD.</p>
-<p>Enhanced the ETL software of one of Germany’s major bank institutions, which heavily
-contributed to acquiring them as a customer.</p>
-<p>Developed a WebView mobile app, using Firebase as a serverless back end and React
-Native.</p>
+<p>Re-architected a slow image recognition ML service into a performant front-end application using TensorFlow.js and Angular 2+, reducing average recognition time from over 1000 ms to ~150 ms, significantly enhancing the user experience.</p>
+<p>Automated and accelerated deployments across multiple Firebase projects by integrating GitLab CI/CD pipelines, enabling faster, more consistent, and reliable release cycles.</p>
+<p>Optimized ETL data workflows and improved system reliability for a major German bank, enhancing backend data processing and playing a key role in securing the client through strengthened product capabilities.</p>
+<p>Implemented a scalable WebView mobile app using React Native with a Firebase serverless backend, delivering an efficient, full-stack mobile solution aligned with client requirements.</p>
 {{< /resume/section >}}
 
 {{< resume/section 
@@ -84,9 +72,8 @@ Native.</p>
     from=`OCTOBER 2017`
     to=`NOVEMBER 2017`
 >}}
-<p>Developed and secured web APIs using Java EE and IBM Security Access Manager.
-Facilitated Assembly Lines’ migration for a large Italian enterprise, using Tivoli
-Directory Integrator and Microsoft Servers.</p>
+<p>Secured web APIs with Java EE and IBM Security Access Manager, strengthening the security framework to comply with enterprise standards and organizational policies.</p>
+<p>Led the migration of Assembly Line systems for a leading Italian enterprise to modern infrastructure leveraging Tivoli Directory Integrator and Microsoft Servers, driving enhanced system integration.</p>
 {{< /resume/section >}}
 
 # Education
